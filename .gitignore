@@ -1,0 +1,89 @@
+# Build artifacts
+build/
+build-win/
+build-wasm/
+build-android/
+build-ios/
+cmake-build-*/
+out/
+external/
+external.win/
+
+# Large binary assets (optional: use Git LFS or store separately)
+# assets/images/**.png
+# assets/images/**.jpg
+# assets/sounds/**.wav
+# assets/music/**.ogg
+
+# CMake cache
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# IDE / Editor
+.vs/
+.vscode/
+.idea/
+*.user
+*.sln
+*.vcxproj*
+*.sdf
+*.VC.db
+*.VC.VC.opendb
+*.map
+
+# Compiled objects
+*.obj
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+
+# Debug / Profile
+*.pdb
+*.idb
+*.pch
+*.ipch
+*.tlog
+Debug/
+Release/
+*.log
+
+# Other
+.svn
+.git/
+*.old
+*.zip
+*.tar
+archive/
+bin/
+obsolete/
+old_code/
+retired_code/
+*.manifest
+*.res
+*.opt
+*.plg
+*.dsw
+*.dsp
+*.aps
+*.clw
+*.ncb
+*.glb
+*.fbx
+
+# macOS
+.DS_Store
+.AppleDouble/
+.LSOverride/
+
+# Linux
+*.swp
+*~
+.project
+.cproject
+
