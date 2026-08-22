@@ -4,10 +4,9 @@ This folder contains a lightweight browser page for previewing the game after it
 
 ## Suggested build output locations
 
-The loader in `app.js` checks for generated files in these locations:
+The loader expects the dedicated WebAssembly build output at:
 
-- `../build/test_ood.js`
-- `../build/wasm/test_ood.js`
+- `../build-wasm/test_ood.js`
 
 ## Serve locally
 
@@ -28,4 +27,4 @@ http://localhost:8000/web/
 
 - The existing Linux build in `build/` can remain intact.
 - For a WebAssembly build, prefer a dedicated build directory such as `build-wasm/` or `build/wasm/` to avoid overwriting the native Linux CMake configuration.
-- If the game does not appear, build the project with Emscripten and place the generated JS/WASM output where the loader expects it.
+- If raylib is not discoverable during the WebAssembly build, set `RAYLIB_WASM_ROOT` to its installation prefix before running `./build.sh wasm`.

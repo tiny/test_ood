@@ -17,31 +17,16 @@ function loadScript(src) {
 }
 
 async function bootWasm() {
-  const candidates = [
-    './test_ood.js'
-    , './test_ood.wasm'
-  ];
-
-  const scriptSrc = candidates.find((candidate) => candidate.endsWith('.js'));
-  if (!scriptSrc) {
-    setStatus('No generated WASM module found yet. Build it with Emscripten and place the output under build/ or build/wasm/.', true);
-    return;
-  }
+  const scriptSrc = '../build-wasm/test_ood.js';
 
   try {
     setStatus(`Loading ${scriptSrc}...`);
+    window.Module = {
+      ...window.Module,
+      canvas,
+      onRuntimeInitialized: () => setStatus('WebAssembly runtime ready.'),
+    };
     await loadScript(scriptSrc);
-
-    if (window.Module) {
-      window.Module.canvas = canvas;
-      window.Module.onRuntimeInitialized = () => {
-        setStatus('WebAssembly runtime ready.');
-      };
-    }
-
-    if (window.test_ood && typeof window.test_ood === 'function') {
-      setStatus('App module initialized.');
-    }
   } catch (error) {
     console.error(error);
     setStatus('The WASM bundle could not be loaded. Build the project for web and refresh this page.', true);

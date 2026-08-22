@@ -26,6 +26,8 @@
 #
 # External dependencies are cached in .deps/ directory to persist across
 # clean builds. This avoids redundant re-fetching of libraries.
+# Set RAYLIB_WASM_ROOT to the installation prefix of a WebAssembly raylib build
+# when it is not discoverable through CMAKE_PREFIX_PATH.
 
 set -e
 
@@ -63,6 +65,9 @@ show_help() {
     echo "  External dependencies are stored in ./.deps/"
     echo "  This directory persists across 'clean' operations"
     echo "  Use 'clean-all' to rebuild everything from scratch"
+    echo ""
+    echo "WebAssembly raylib:"
+    echo "  Set RAYLIB_WASM_ROOT to raylib's WASM installation prefix if needed"
 }
 
 # Normalize platform name to CMake format
@@ -224,11 +229,14 @@ echo "  Build dir: ./$BUILD_DIR"
 echo "  Dependency cache: ./.deps/"
 
 if [[ "${PLATFORM,,}" == "webassembly" || "${PLATFORM,,}" == "wasm" ]]; then
-    emcmake cmake -B "$BUILD_DIR" \
-        -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-        -DTARGET_PLATFORM=$PLATFORM \
-        -Draylib_DIR="/mnt/drive_e/wrk/raylib/install-wasm/lib/cmake/raylib" \
-        -DCMAKE_PREFIX_PATH="/mnt/drive_e/wrk/raylib/install-wasm"
+    WASM_CMAKE_ARGS=(
+        "-DCMAKE_BUILD_TYPE=$BUILD_TYPE"
+        "-DTARGET_PLATFORM=$PLATFORM"
+    )
+    if [[ -n "${RAYLIB_WASM_ROOT:-}" ]]; then
+        WASM_CMAKE_ARGS+=("-DRAYLIB_WASM_ROOT=$RAYLIB_WASM_ROOT")
+    fi
+    emcmake cmake -B "$BUILD_DIR" "${WASM_CMAKE_ARGS[@]}"
 else
     cmake -B "$BUILD_DIR" \
         -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
@@ -247,10 +255,9 @@ echo "=========================================="
 echo "Platform:     $PLATFORM"
 echo "Build Type:   $BUILD_TYPE"
 echo "Build Dir:    ./$BUILD_DIR"
-echo "Executable:   ./$BUILD_DIR/hell_rocks"
-echo "To run:       ./$BUILD_DIR/hell_rocks"
+echo "Executable:   ./$BUILD_DIR/test_ood"
+echo "To run:       ./$BUILD_DIR/test_ood"
 echo ""
 echo "Dependency Cache: ./.deps/"
 echo "  (persists across 'clean' builds)"
 echo ""
-

@@ -44,10 +44,10 @@ class Shape
     virtual void Draw() = 0;
     virtual void randomize() { 
         _expire_ts = __now + rand() % 9000 + 1000; // random expiration between 1 and 10 seconds
-        _x = rand() % (__screen_cx - _width);
-        _y = rand() % (__screen_cy - _height);
         _width = rand() % 100 + 20; // random width between 20 and 120
         _height = rand() % 100 + 20; // random height between 20 and 120
+        _x = rand() % (__screen_cx - _width);
+        _y = rand() % (__screen_cy - _height);
         _color = Color{(unsigned char)(rand() % 256), (unsigned char)(rand() % 256), (unsigned char)(rand() % 256), 255};
 
         // movement
@@ -99,6 +99,12 @@ class Square : public Box
     Square() : Box() {}
     Square(int x, int y, int size, Color color)
         : Box(x, y, size, size, color) {}
+
+    void randomize() override
+    {
+        Shape::randomize();
+        _height = _width;
+    }
 }; // class Square
 
 class Ellipse : public Shape
@@ -126,6 +132,12 @@ class Circle : public Ellipse
     Circle() : Ellipse() {}
     Circle(int x, int y, int radius, Color color)
         : Ellipse(x, y, radius, radius, color) {}
+
+    void randomize() override
+    {
+        Shape::randomize();
+        _height = _width;
+    }
 }; // class Circle
 
 void bring_out_yer_dead( std::vector<Shape*>& shapes )
@@ -201,8 +213,8 @@ int main( int argc, const char *argv[] )
     while (!WindowShouldClose())
     {
         __now = timeGetTime();
-        dt = __now - last_time;
-        if ((dt == 0) || (dt > 1000)) continue ;
+        dt = std::max( 0, std::min( (int32_t)(__now - last_time), 100 )) ;
+        if (dt == 0) continue ;
         last_time = __now;
 
         for (auto shape : shapes)  shape->twitch(dt);
@@ -219,9 +231,9 @@ int main( int argc, const char *argv[] )
         EndDrawing();
     }
 
+    for (Shape* shape : shapes) delete shape;
     CloseWindow();
 
     return 0 ;
 } // :: main
-
 
